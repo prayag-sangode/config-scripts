@@ -12,6 +12,8 @@ sudo dnf install leapp-upgrade -y
 sudo dnf versionlock clear
 sudo sed -i 's|.*AllowZoneDrifting*|#&|g' /etc/firewalld/firewalld.conf
 cat /etc/firewalld/firewalld.conf | grep AllowZoneDrifting
+sudo echo "no_vdo_devices = True" >> /var/log/leapp/answerfile
+sudo cat /var/log/leapp/answerfile
 sudo leapp preupgrade --target 9.0
 sudo leapp upgrade --target 9.0
 cat /etc/redhat-release
