@@ -1,3 +1,7 @@
+
+#!/bin/bash
+# Author : Prayag Sangode
+# Bash script to upgrade RHEL8 to RHEL9
 cat /etc/redhat-release
 sudo rm -rf /root/tmp_leapp_py3
 sudo subscription-manager list --installed
