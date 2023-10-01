@@ -1,8 +1,8 @@
 #!/bin/bash
 
 # Define variables
-NEW_HOSTNAME="k8s-node2.example.com"
-NEW_IP="192.168.200.62"
+NEW_HOSTNAME="k8s-node3.example.com"
+NEW_IP="192.168.200.63"
 NEW_NETMASK="24"
 NEW_GATEWAY="192.168.200.1"
 USERNAME="prayag"
@@ -21,7 +21,7 @@ if ! id "$USERNAME" &>/dev/null; then
 fi
 
 # Change password
-echo -e "$NEW_PASSWORD\n$NEW_PASSWORD" | passwd $username
+echo -e "$NEW_PASSWORD\n$NEW_PASSWORD" | passwd $USERNAME
 
 # Set hostname if necessary
 CURRENT_HOSTNAME=$(cat /etc/hostname)
