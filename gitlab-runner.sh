@@ -9,3 +9,6 @@ sudo systemctl daemon-reload
 sudo systemctl restart gitlab-runner
 export REGISTRATION_TOKEN=glrt-1w-e9u-sv6GM3xgAwRGY
 sudo gitlab-runner register --url https://gitlab.devops.telekom.de/ --registration-token $REGISTRATION_TOKEN
+
+# Remove/ un-register -
+# gitlab-runner verify --delete -t glrt-1w-e9u-sv6GM3xgAwRGY -u https://gitlab.devops.telekom.de/
