@@ -7,7 +7,7 @@ cat /etc/docker/daemon.json
 sudo sed -i -e 's|^\(ExecStart=/usr/bin/dockerd -H fd:// --containerd=/run/containerd/containerd.sock\)|#\1\nExecStart=/usr/bin/dockerd|' /lib/systemd/system/docker.service
 sudo systemctl daemon-reload
 sudo systemctl restart gitlab-runner
-export REGISTRATION_TOKEN=glrt-1w-e9u-sv6GM3xgAwRGY
+export REGISTRATION_TOKEN=<replace-me>
 sudo gitlab-runner register --url https://gitlab.devops.telekom.de/ --registration-token $REGISTRATION_TOKEN
 
 # Remove/ un-register -
