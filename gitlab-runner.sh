@@ -8,7 +8,7 @@ sudo sed -i -e 's|^\(ExecStart=/usr/bin/dockerd -H fd:// --containerd=/run/conta
 sudo systemctl daemon-reload
 sudo systemctl restart gitlab-runner
 export REGISTRATION_TOKEN=<replace-me>
-sudo gitlab-runner register --url https://gitlab.devops.telekom.de/ --registration-token $REGISTRATION_TOKEN
+sudo gitlab-runner register --url https://gitlab.com --registration-token $REGISTRATION_TOKEN
 
 # Remove/ un-register -
 # gitlab-runner verify --delete -t <token> -u https://gitlab.com
