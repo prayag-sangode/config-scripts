@@ -11,4 +11,4 @@ export REGISTRATION_TOKEN=<replace-me>
 sudo gitlab-runner register --url https://gitlab.devops.telekom.de/ --registration-token $REGISTRATION_TOKEN
 
 # Remove/ un-register -
-# gitlab-runner verify --delete -t glrt-1w-e9u-sv6GM3xgAwRGY -u https://gitlab.devops.telekom.de/
+# gitlab-runner verify --delete -t <token> -u https://gitlab.com
