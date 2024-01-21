@@ -45,7 +45,7 @@ sudo apt-get install -y kubelet=1.23.0-00 kubeadm=1.23.0-00 kubectl=1.23.0-00
 sudo apt-mark hold kubelet kubeadm kubectl
 
 # On the master node only
-if [[ "$(hostname)" == "k8s-node.example.com" ]]; then
+if [[ "$(hostname)" == "k8s-node1.example.com" ]]; then
   # Initialize the Kubernetes master
   sudo kubeadm init --pod-network-cidr=192.168.0.0/16 --kubernetes-version=1.23.0
 
