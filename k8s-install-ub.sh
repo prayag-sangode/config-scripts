@@ -28,7 +28,7 @@ sudo systemctl restart containerd
 
 # Disable swap
 sudo swapoff -a
-sudo sed -i '/ swap / s/^\(.*\)$/#\1/g' /etc/fstab
+sudo sed -i '/swap/ s/^/#/' /etc/fstab
 
 # Install Kubernetes components
 curl -s https://packages.cloud.google.com/apt/doc/apt-key.gpg | sudo apt-key add -
