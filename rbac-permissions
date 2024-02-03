@@ -1,0 +1,42 @@
+| apiGroups                         | resources                  | verbs                                    | Definition                                           |
+|-----------------------------------|----------------------------|------------------------------------------|------------------------------------------------------|
+| core                              | pods                       | get, list, create, delete, update, watch  | Core API group for fundamental cluster resources.     |
+| core                              | services                   | get, list, create, delete, update, watch  | Core API group for defining services.                 |
+| core                              | nodes                      | get, list, watch                         | Core API group for interacting with cluster nodes.   |
+| core                              | namespaces                 | get, list, watch                         | Core API group for managing namespaces.              |
+| core                              | configmaps                 | get, list, create, delete, update, watch  | Core API group for configuration data.                |
+| core                              | secrets                    | get, list, create, delete, update, watch  | Core API group for managing secrets.                  |
+| core                              | persistentvolumes          | get, list, create, delete, update, watch  | Core API group for managing persistent volumes.      |
+| core                              | persistentvolumeclaims     | get, list, create, delete, update, watch  | Core API group for managing persistent volume claims.|
+| apps                              | deployments                | get, list, create, delete, update, watch  | Apps API group for managing deployments.             |
+| apps                              | statefulsets               | get, list, create, delete, update, watch  | Apps API group for managing stateful sets.           |
+| apps                              | replicasets                | get, list, create, delete, update, watch  | Apps API group for managing replica sets.            |
+| extensions                        | ingresses                  | get, list, create, delete, update, watch  | Deprecated API group for managing ingresses.         |
+| batch                             | jobs                       | get, list, create, delete, update, watch  | Batch API group for managing jobs.                   |
+| batch                             | cronjobs                   | get, list, create, delete, update, watch  | Batch API group for managing cron jobs.               |
+| networking.k8s.io                 | networkpolicies            | get, list, create, delete, update, watch  | Networking API group for managing network policies.  |
+| storage.k8s.io                    | storageclasses             | get, list, create, delete, update, watch  | Storage API group for managing storage classes.      |
+| storage.k8s.io                    | volumeattachments          | get, list, create, delete, update, watch  | Storage API group for managing volume attachments.   |
+| rbac.authorization.k8s.io         | roles                      | get, list, create, delete, update, watch  | RBAC API group for managing roles.                   |
+| rbac.authorization.k8s.io         | rolebindings               | get, list, create, delete, update, watch  | RBAC API group for managing role bindings.           |
+| rbac.authorization.k8s.io         | clusterroles               | get, list, create, delete, update, watch  | RBAC API group for managing cluster roles.          |
+| rbac.authorization.k8s.io         | clusterrolebindings        | get, list, create, delete, update, watch  | RBAC API group for managing cluster role bindings.  |
+| autoscaling                       | horizontalpodautoscalers  | get, list, create, delete, update, watch  | Autoscaling API group for managing HPA.             |
+| policy                            | poddisruptionbudgets       | get, list, create, delete, update, watch  | Policy API group for managing pod disruption budgets.|
+| scheduling.k8s.io                 | priorityclasses            | get, list, watch                         | Scheduling API group for managing priority classes. |
+| coordination.k8s.io               | leases                     | get, list, create, delete, update, watch  | Coordination API group for managing leases.         |
+| authentication.k8s.io             | tokenreviews               | create                                   | Authentication API group for token reviews.         |
+| authorization.k8s.io              | subjectaccessreviews       | create                                   | Authorization API group for subject access reviews. |
+| certificates.k8s.io               | certificatesigningrequests | create, delete                           | Certificates API group for signing requests.        |
+| admissionregistration.k8s.io      | mutatingwebhookconfigurations | get, list, create, delete, update, watch  | Admission Registration API group for mutating webhook configurations. |
+| admissionregistration.k8s.io      | validatingwebhookconfigurations | get, list, create, delete, update, watch  | Admission Registration API group for validating webhook configurations. |
+| coordination.k8s.io               | leases                     | get, list, create, delete, update, watch  | Coordination API group for managing leases.         |
+| networking.k8s.io                 | ingresses                  | get, list, create, delete, update, watch  | Networking API group for managing ingresses.        |
+| discovery.k8s.io                  | endpoints                  | get, list, watch                         | Discovery API group for managing endpoints.         |
+| storage.k8s.io                    | csinodes                   | get, list, watch                         | Storage API group for managing CSI nodes.           |
+| storage.k8s.io                    | storagestates              | get, list, watch                         | Storage API group for managing storage states.      |
+| storage.k8s.io                    | volumeattachments          | get, list, create, delete, update, watch  | Storage API group for managing volume attachments. |
+| storage.k8s.io                    | volumeattachments          | get, list, create, delete, update, watch  | Storage API group for managing volume attachments. |
+| apps                              | controllerrevisions        | get, list, watch                         | Apps API group for managing controller revisions.  |
+| events.k8s.io                     | events                     | get, list, watch                         | Events API group for managing events.               |
+| coordination.k8s.io               | leases                     | get, list, create, delete, update, watch  | Coordination API group for managing leases.         |
