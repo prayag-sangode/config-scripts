@@ -1,16 +1,16 @@
 #!/bin/bash
+# Create Deployment1
+kubectl create deployment httpd-deployment1 --image=httpd:latest --port=80
 
-# Create Deployment
-kubectl create deployment httpd-deployment --image=httpd:latest --port=80
+# Expose Deployment1 with ClusterIP Service
+kubectl expose deployment httpd-deployment1 --name=httpd-clusterip1 --port=80 --target-port=80 --type=ClusterIP
 
-# Create ClusterIP Service
-kubectl expose deployment httpd-deployment --name=httpd-clusterip --port=80 --target-port=80 --type=ClusterIP
+# Create Deployment2
+kubectl create deployment httpd-deployment2 --image=httpd:latest --port=80
 
-# Create NodePort Service
-kubectl expose deployment httpd-deployment --name=httpd-nodeport --port=80 --target-port=80 --type=NodePort
+# Expose Deployment2 with ClusterIP Service
+kubectl expose deployment httpd-deployment2 --name=httpd-clusterip2 --port=80 --target-port=80 --type=ClusterIP
 
-# Create NodePort Service
-kubectl expose deployment httpd-deployment --name=httpd-lb --port=80 --target-port=80 --type=LoadBalancer
-
-# Display Service Information
-kubectl get services
+# Create Ingress
+kubectl create ingress web1-ingress --rule="web1.example.com/*=httpd-clusterip1:80" --annotation="nginx.ingress.kubernetes.io/rewrite-target=/" --annotation="kubernetes.io/ingress.class=nginx"
+kubectl create ingress web2-ingress --rule="web2.example.com/*=httpd-clusterip2:80" --annotation="nginx.ingress.kubernetes.io/rewrite-target=/" --annotation="kubernetes.io/ingress.class=nginx"
