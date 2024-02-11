@@ -36,8 +36,8 @@ sudo usermod -a -G microk8s $USER
 sudo chown -f -R $USER ~/.kube
 newgrp microk8s
 
-# Create ingress service
-kubectl apply -f - <<EOF
+# Define the YAML content for the Service
+SERVICE_YAML=$(cat <<EOF
 apiVersion: v1
 kind: Service
 metadata:
@@ -57,6 +57,10 @@ spec:
       port: 443
       targetPort: 443
 EOF
+)
+
+# Apply the YAML using kubectl
+echo "$SERVICE_YAML" | kubectl apply -f -
 
 # Output success message
 echo "MicroK8s, Docker, MetalLB with specified IP range, Ingress, and kubectl have been installed and configured successfully."
