@@ -42,9 +42,9 @@ kubectl get svc -n monitoring
 #kubectl -n monitoring patch svc prometheus-k8s -p '{"spec": {"type": "LoadBalancer"}}'
 
 # For NodePort
-kubectl -n monitoring patch svc alertmanager-main -p '{"spec": {"type": "NodePort"}}'
-kubectl -n monitoring patch svc grafana -p '{"spec": {"type": "NodePort"}}'
-kubectl -n monitoring patch svc prometheus-k8s -p '{"spec": {"type": "NodePort"}}'
+#kubectl -n monitoring patch svc alertmanager-main -p '{"spec": {"type": "NodePort"}}'
+#kubectl -n monitoring patch svc grafana -p '{"spec": {"type": "NodePort"}}'
+#kubectl -n monitoring patch svc prometheus-k8s -p '{"spec": {"type": "NodePort"}}'
 
 # For reverting back to custerip
 #kubectl -n monitoring patch svc alertmanager-main -p '{"spec": {"type": "ClusterIP"}}'
