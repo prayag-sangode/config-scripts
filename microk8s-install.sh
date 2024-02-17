@@ -25,9 +25,6 @@ sleep 300
 alias kubectl='microk8s kubectl'
 echo "alias kubectl='microk8s kubectl'" >> ~/.bashrc
 
-# Enable necessary MicroK8s addons including MetalLB
-sudo microk8s enable dns storage dashboard metallb:192.168.1.131-192.168.1.135 ingress
-
 # Install kubectl
 sudo snap install kubectl --classic
 
@@ -35,6 +32,15 @@ sudo snap install kubectl --classic
 sudo usermod -a -G microk8s $USER
 sudo chown -f -R $USER ~/.kube
 newgrp microk8s
+
+# Sleep for 5 minutes
+sleep 300
+
+# Enable necessary MicroK8s addons including MetalLB
+sudo microk8s enable dns storage dashboard metallb:192.168.1.131-192.168.1.135 ingress
+
+# Sleep for 5 minutes
+sleep 300
 
 # Define the YAML content for the Service
 SERVICE_YAML=$(cat <<EOF
