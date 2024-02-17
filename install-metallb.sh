@@ -15,6 +15,12 @@ metadata:
 spec:
   addresses:
   - 192.168.1.240-192.168.1.250
+---
+apiVersion: metallb.io/v1beta1
+kind: L2Advertisement
+metadata:
+  name: example
+  namespace: metallb-system
 EOF
 
 kubectl -n metallb-system get all
