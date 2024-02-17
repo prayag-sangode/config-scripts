@@ -26,3 +26,28 @@ kubectl get pods -n monitoring -w
 
 # Get the services in the monitoring namespace
 kubectl get svc -n monitoring
+
+# Check grafana by port forwarding
+#kubectl port-forward --address 0.0.0.0 --namespace monitoring svc/grafana 3000
+
+# Check prometheus by port forwarding
+# kubectl port-forward --address 0.0.0.0 --namespace monitoring svc/prometheus-k8s 9090
+
+# Check alertmanager by port forwarding
+# kubectl port-forward --address 0.0.0.0 --namespace monitoring svc/alertmanager-main 9093
+
+# If LB available
+#kubectl -n monitoring patch svc alertmanager-main -p '{"spec": {"type": "LoadBalancer"}}'
+#kubectl -n monitoring patch svc grafana -p '{"spec": {"type": "LoadBalancer"}}'
+#kubectl -n monitoring patch svc prometheus-k8s -p '{"spec": {"type": "LoadBalancer"}}'
+
+# For NodePort
+kubectl -n monitoring patch svc alertmanager-main -p '{"spec": {"type": "NodePort"}}'
+kubectl -n monitoring patch svc grafana -p '{"spec": {"type": "NodePort"}}'
+kubectl -n monitoring patch svc prometheus-k8s -p '{"spec": {"type": "NodePort"}}'
+
+# For reverting back to custerip
+#kubectl -n monitoring patch svc alertmanager-main -p '{"spec": {"type": "ClusterIP"}}'
+#kubectl -n monitoring patch svc grafana -p '{"spec": {"type": "ClusterIP"}}'
+#kubectl -n monitoring patch svc prometheus-k8s -p '{"spec": {"type": "ClusterIP"}}'
+
