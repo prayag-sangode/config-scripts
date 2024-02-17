@@ -19,7 +19,7 @@ spec:
 apiVersion: metallb.io/v1beta1
 kind: L2Advertisement
 metadata:
-  name: example
+  name: default-advertise-all-pools
   namespace: metallb-system
 EOF
 
