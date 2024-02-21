@@ -51,3 +51,4 @@ kubectl -n monitoring patch svc prometheus-k8s -p '{"spec": {"type": "NodePort"}
 #kubectl -n monitoring patch svc grafana -p '{"spec": {"type": "ClusterIP"}}'
 #kubectl -n monitoring patch svc prometheus-k8s -p '{"spec": {"type": "ClusterIP"}}'
 
+#kubectl get secret --namespace monitoring grafana -o jsonpath="{.data.admin-password}" | base64 --decode
