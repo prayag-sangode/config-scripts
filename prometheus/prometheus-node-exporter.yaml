@@ -43,3 +43,17 @@ spec:
           path: /sys
       - name: textfile-collector
         emptyDir: {}
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: node-exporter
+  namespace: monitoring
+spec:
+  selector:
+    app: node-exporter
+  ports:
+    - name: http
+      protocol: TCP
+      port: 9100
+      targetPort: http
