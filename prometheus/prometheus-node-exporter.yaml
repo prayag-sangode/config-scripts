@@ -1,0 +1,45 @@
+apiVersion: apps/v1
+kind: DaemonSet
+metadata:
+  name: node-exporter
+  namespace: monitoring
+  labels:
+    app: node-exporter
+spec:
+  selector:
+    matchLabels:
+      app: node-exporter
+  template:
+    metadata:
+      labels:
+        app: node-exporter
+    spec:
+      containers:
+      - name: node-exporter
+        image: prom/node-exporter:v1.2.2 # Update the image version if needed
+        ports:
+        - name: http
+          containerPort: 9100
+        args:
+        - --path.procfs=/host/proc
+        - --path.sysfs=/host/sys
+        - --web.listen-address=0.0.0.0:9100
+        - --collector.textfile.directory=/etc/node-exporter/textfile_collector
+        volumeMounts:
+        - name: proc
+          mountPath: /host/proc
+          readOnly: true
+        - name: sys
+          mountPath: /host/sys
+          readOnly: true
+        - name: textfile-collector
+          mountPath: /etc/node-exporter/textfile_collector
+      volumes:
+      - name: proc
+        hostPath:
+          path: /proc
+      - name: sys
+        hostPath:
+          path: /sys
+      - name: textfile-collector
+        emptyDir: {}
