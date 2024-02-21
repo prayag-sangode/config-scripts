@@ -135,3 +135,5 @@ data:
     - job_name: 'node-exporter'
       static_configs:
       - targets: ['node-exporter:9100']
+
+# kubectl get secret --namespace monitoring grafana -o jsonpath="{.data.admin-password}" | base64 --decode
