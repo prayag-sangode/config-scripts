@@ -64,4 +64,12 @@ if [[ "$(hostname)" == "k8s-node1.example.com" ]]; then
   kubeadm token create --print-join-command
 fi
 # if using single node un taint using
-# kubectl taint nodes k8s-node1.example.com node-role.kubernetes.io/master-
+#prayag@k8s-node1:~/config-scripts$ kubectl describe node k8s-node1.example.com | grep Taints
+#Taints:             node-role.kubernetes.io/control-plane:NoSchedule
+#prayag@k8s-node1:~/config-scripts$ kubectl taint nodes k8s-node1.example.com node-role.kubernetes.io/control-plane-
+#node/k8s-node1.example.com untainted
+#prayag@k8s-node1:~/config-scripts$ kubectl describe node k8s-node1.example.com | grep Taints
+#Taints:             <none>
+#prayag@k8s-node1:~/config-scripts$
+
+
