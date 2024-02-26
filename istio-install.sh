@@ -12,7 +12,7 @@ export PATH="$PATH:$ISTIO_DIR/bin"
 istioctl x precheck
 
 # Apply Istio to the Kubernetes cluster
-istioctl install --set profile=default
+istioctl install --set profile=demo
 
 # Verify Istio installation
 kubectl get pods -n istio-system
