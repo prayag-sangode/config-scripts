@@ -39,7 +39,7 @@ deb https://apt.kubernetes.io/ kubernetes-xenial main
 EOF
 
 sudo apt-get update
-sudo apt-get install -y kubelet=1.23.0-00 kubeadm=1.23.0-00 kubectl=1.23.0-00
+sudo apt-get install -y kubelet=1.28.0-00 kubeadm=1.28.0-00 kubectl=1.28.0-00
 
 # Hold the Kubernetes packages to prevent automatic updates
 sudo apt-mark hold kubelet kubeadm kubectl
@@ -47,7 +47,7 @@ sudo apt-mark hold kubelet kubeadm kubectl
 # On the master node only
 if [[ "$(hostname)" == "k8s-node1.example.com" ]]; then
   # Initialize the Kubernetes master
-  sudo kubeadm init --pod-network-cidr=192.168.0.0/16 --kubernetes-version=1.23.0
+  sudo kubeadm init --pod-network-cidr=192.168.0.0/16 --kubernetes-version=1.28.0
 
   # Set up kubeconfig for the user
   mkdir -p $HOME/.kube
