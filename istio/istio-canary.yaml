@@ -121,3 +121,4 @@ spec:
   - name: subset-v2
     labels:
       version: v2
+# to test - while sleep 1; do curl http://web.example.com; echo ""; done
