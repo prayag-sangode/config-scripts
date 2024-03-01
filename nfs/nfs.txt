@@ -1,0 +1,66 @@
+On nfs server -
+
+apt install nfs-kernel-server
+mkdir -p /home/nfsshare
+chown -R nobody:nogroup /home/nfsshare
+chmod 777 /home/nfsshare
+cat /etc/exports
+/home/nfsshare *(rw,sync,no_subtree_check)
+exportfs -a
+exportfs -v
+systemctl restart nfs-kernel-server
+systemctl enable nfs-kernel-server
+
+On master and worker node -
+
+apt install nfs-common
+mount -t nfs nfs-server:/home/nfsshare /mnt
+
+On master node -
+
+helm repo add nfs-subdir-external-provisioner https://kubernetes-sigs.github.io/nfs-subdir-external-provisioner/
+helm update
+helm repo list
+helm list
+kubectl create ns nfsstorage
+helm install nfs-subdir-external-provisioner nfs-subdir-external-provisioner/nfs-subdir-external-provisioner  --set nfs.server=192.168.200.46 --set nfs.path=/home/nfsshare -n nfsstorage
+kubectl get all -n nfsstorage
+kubectl get storageclass
+
+cat > pvc-test.yam
+
+kind: PersistentVolumeClaim
+apiVersion: v1
+metadata:
+  name: test-claim
+spec:
+  storageClassName: nfs-client
+  accessModes:
+    - ReadWriteMany
+  resources:
+    requests:
+      storage: 1Mi
+
+
+kubectl get sc
+kubectl get sc,pv, pvc
+
+---
+helm repo ls
+helm repo add nfs-subdir-external-provisioner https://kubernetes-sigs.github.io/nfs-subdir-external-provisioner/
+helm install nfs-client -n kube-system --set nfs.server=localhost --set nfs.path=/data/export nfs-subdir-external-provisioner/nfs-subdir-external-provisioner
+helm repo ls
+helm -n kube-system ls
+
+prayag@k8s-node1:~$ helm repo ls
+NAME                            URL
+nfs-subdir-external-provisioner https://kubernetes-sigs.github.io/nfs-subdir-external-provisioner/
+prayag@k8s-node1:~$ helm -n kube-system ls
+NAME            NAMESPACE       REVISION        UPDATED                                 STATUS          CHART                                   APP VERSION
+nfs-client      kube-system     1               2024-03-01 12:47:13.220452303 +0000 UTC deployed        nfs-subdir-external-provisioner-4.0.18  4.0.2
+prayag@k8s-node1:~$
+
+
+
+
+

@@ -1,0 +1,56 @@
+# pre-requisites - # k8s cluster with nginx ingress or istio ingress, auto pvc provisioning setup (nfs-subdir-provisioner)
+
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: vault
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: vault
+  namespace: vault
+spec:
+  selector:
+    app: vault
+  ports:
+    - protocol: TCP
+      port: 8200
+      targetPort: 8200
+---
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: vault
+  namespace: vault
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: vault
+  serviceName: vault
+  template:
+    metadata:
+      labels:
+        app: vault
+    spec:
+      containers:
+        - name: vault
+          image: hashicorp/vault:latest
+          ports:
+            - containerPort: 8200
+          env:
+            - name: VAULT_ADDR
+              value: "http://127.0.0.1:8200"
+          volumeMounts:
+            - name: vault-data
+              mountPath: /vault/data
+  volumeClaimTemplates:
+    - metadata:
+        name: vault-data
+      spec:
+        accessModes: [ "ReadWriteOnce" ]
+        storageClassName: "nfs-client"  # Use nfs-client storage class
+        resources:
+          requests:
+            storage: 1Gi  # Update with your desired storage size
