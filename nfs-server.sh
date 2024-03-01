@@ -21,3 +21,6 @@ sudo systemctl restart nfs-kernel-server
 sudo systemctl enable nfs-kernel-server
 
 echo "NFS server installation and export setup complete."
+
+# Showmount
+showmount -e localhost
