@@ -30,16 +30,15 @@ sudo systemctl restart containerd
 sudo swapoff -a
 sudo sed -i '/swap/ s/^/#/' /etc/fstab
 
+# Add Kubernetes repository key
+sudo curl -fsSL https://pkgs.k8s.io/core:/stable:/v1.28/deb/Release.key | sudo gpg --dearmor -o /usr/share/keyrings/kubernetes-apt-keyring.gpg
+
+# Add Kubernetes repository to sources list
+echo 'deb [signed-by=/usr/share/keyrings/kubernetes-apt-keyring.gpg] https://pkgs.k8s.io/core:/stable:/v1.28/deb/ /' | sudo tee /etc/apt/sources.list.d/kubernetes.list
+
 # Install Kubernetes components
-curl -s https://packages.cloud.google.com/apt/doc/apt-key.gpg | sudo apt-key add -
-sudo apt-get update && sudo apt-get install -y apt-transport-https curl
-
-cat <<EOF | sudo tee /etc/apt/sources.list.d/kubernetes.list
-deb https://apt.kubernetes.io/ kubernetes-xenial main
-EOF
-
 sudo apt-get update
-sudo apt-get install -y kubelet=1.28.0-00 kubeadm=1.28.0-00 kubectl=1.28.0-00
+sudo apt-get install -y kubelet=1.28.1-1.1 kubeadm=1.28.1-1.1 kubectl=1.28.1-1.1
 
 # Hold the Kubernetes packages to prevent automatic updates
 sudo apt-mark hold kubelet kubeadm kubectl
@@ -47,7 +46,7 @@ sudo apt-mark hold kubelet kubeadm kubectl
 # On the master node only
 if [[ "$(hostname)" == "k8s-node1.example.com" ]]; then
   # Initialize the Kubernetes master
-  sudo kubeadm init --pod-network-cidr=192.168.0.0/16 --kubernetes-version=1.28.0
+  sudo kubeadm init --pod-network-cidr=192.168.0.0/16 --kubernetes-version=1.28.1
 
   # Set up kubeconfig for the user
   mkdir -p $HOME/.kube
@@ -63,13 +62,8 @@ if [[ "$(hostname)" == "k8s-node1.example.com" ]]; then
   # Print the join command for other nodes
   kubeadm token create --print-join-command
 fi
-# if using single node un taint using
-#prayag@k8s-node1:~/config-scripts$ kubectl describe node k8s-node1.example.com | grep Taints
-#Taints:             node-role.kubernetes.io/control-plane:NoSchedule
-#prayag@k8s-node1:~/config-scripts$ kubectl taint nodes k8s-node1.example.com node-role.kubernetes.io/control-plane-
-#node/k8s-node1.example.com untainted
-#prayag@k8s-node1:~/config-scripts$ kubectl describe node k8s-node1.example.com | grep Taints
-#Taints:             <none>
-#prayag@k8s-node1:~/config-scripts$
 
-
+# untaint
+# kubectl describe node k8s-node1.example.com | grep Taints
+# kubectl taint nodes k8s-node1.example.com node-role.kubernetes.io/control-plane-
+# kubectl describe node k8s-node1.example.com | grep Taints
