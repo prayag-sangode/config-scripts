@@ -1,0 +1,84 @@
+# helm repo add grafana https://grafana.github.io/helm-charts 
+# helm install loki-stack grafana/loki-stack --namespace=monitoring --create-namespace -f loki.yaml
+
+# loki-stack-values.yaml
+
+grafana:
+  enabled: true
+  adminPassword: "your-grafana-password"
+  service:
+    type: LoadBalancer
+  persistence:
+    enabled: true
+    storageClassName: "standard"
+    accessModes:
+      - ReadWriteOnce
+    size: 10Gi
+  resources:
+    limits:
+      cpu: 500m
+      memory: 1Gi
+    requests:
+      cpu: 250m
+      memory: 500Mi
+
+loki:
+  persistence:
+    enabled: true
+    storageClassName: "standard"
+    accessModes:
+      - ReadWriteOnce
+    size: 10Gi
+  resources:
+    limits:
+      cpu: 1000m
+      memory: 2Gi
+    requests:
+      cpu: 500m
+      memory: 1Gi
+
+prometheus:
+  enabled: true  # Enable Prometheus in the Loki stack
+  alertmanager:
+    enabled: true  # Optional: Enable Alertmanager if needed
+  prometheusSpec:
+    serviceMonitorSelectorNilUsesHelmValues: false
+    serviceMonitorNamespaceSelector:
+      matchNames:
+        - monitoring
+    serviceMonitorSelector:
+      matchLabels:
+        release: prometheus-stack  # Adjust based on your Prometheus release name
+    additionalScrapeConfigs:
+      - job_name: "loki"
+        static_configs:
+          - targets:
+              - loki:3100  # Adjust based on your Loki service name and port
+    resources:
+      limits:
+        cpu: 1000m
+        memory: 2Gi
+      requests:
+        cpu: 500m
+        memory: 1Gi
+
+promtail:
+  enabled: true
+  config:
+    clients:
+      - url: http://loki.monitoring.svc.cluster.local:3100/loki/api/v1/push
+    scrape_configs:
+      - job_name: system
+        static_configs:
+          - targets:
+              - localhost
+            labels:
+              job: varlogs
+              __path__: /var/log/*log
+  resources:
+    limits:
+      cpu: 500m
+      memory: 1Gi
+    requests:
+      cpu: 250m
+      memory: 500Mi

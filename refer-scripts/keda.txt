@@ -1,0 +1,5 @@
+# Refer -> https://github.com/kedacore/http-add-on/tree/main/examples/v0.8.0
+# Refer -> https://medium.com/@carlocolumna/how-to-scale-your-pods-based-on-http-traffic-d58221d5e7f1
+helm repo add kedacore https://kedacore.github.io/charts
+helm install keda kedacore/keda --namespace keda --create-namespace
+helm install http-add-on kedacore/keda-add-ons-http --namespace  keda
