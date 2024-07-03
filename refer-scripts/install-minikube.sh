@@ -17,6 +17,8 @@ fi
 # Add your user to the docker group if not already added (you might need to log out and log back in for this to take effect)
 sudo usermod -aG docker $USER
 
+exit
+
 # Install kubectl if it is not already installed
 if ! command -v kubectl &> /dev/null
 then
