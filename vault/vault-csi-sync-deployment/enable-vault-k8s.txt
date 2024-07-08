@@ -1,18 +1,23 @@
 kubectl -n vault exec -it vault-0 -- /bin/sh
 
 vault login root
+
 vault secrets enable -version=1 kv
+
 vault auth enable kubernetes
+
 vault write auth/kubernetes/config token_reviewer_jwt="$(cat /var/run/secrets/kubernetes.io/serviceaccount/token)" kubernetes_host="https://$KUBERNETES_PORT_443_TCP_ADDR:443" kubernetes_ca_cert=@/var/run/secrets/kubernetes.io/serviceaccount/ca.crt
 vault policy write kv_policy - <<EOF
 path "kv/*" {
   capabilities = ["read"]
 }
 EOF
+
 vault write auth/kubernetes/role/csi-kv \
 bound_service_account_names=csi-sa \
 bound_service_account_namespaces=default \
 policies=kv_policy \
 ttl=20m
+
 vault kv put kv/db password=mypassword
 vault kv put kv/app user=myuser
