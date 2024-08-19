@@ -1,0 +1,225 @@
+
+replicaCount: 1
+
+revisionHistoryLimit: 10
+
+image:
+  repository: quay.io/prometheus/alertmanager
+  pullPolicy: IfNotPresent
+  tag: ""
+
+baseURL: ""
+
+extraArgs: {}
+
+extraSecretMounts: []
+
+imagePullSecrets: []
+nameOverride: ""
+fullnameOverride: ""
+namespaceOverride: ""
+
+automountServiceAccountToken: true
+
+serviceAccount:
+  create: true
+  annotations: {}
+  name: ""
+
+priorityClassName: ""
+
+schedulerName: ""
+
+podSecurityContext:
+  fsGroup: 65534
+dnsConfig: {}
+hostAliases: []
+securityContext:
+  runAsUser: 65534
+  runAsNonRoot: true
+  runAsGroup: 65534
+
+additionalPeers: []
+
+extraInitContainers: []
+
+extraContainers: []
+
+livenessProbe:
+  httpGet:
+    path: /
+    port: http
+
+readinessProbe:
+  httpGet:
+    path: /
+    port: http
+
+service:
+  annotations: {}
+  labels: {}
+  type: ClusterIP
+  port: 9093
+  clusterPort: 9094
+
+  extraPorts: []
+
+  ipDualStack:
+    enabled: false
+    ipFamilies: ["IPv6", "IPv4"]
+    ipFamilyPolicy: "PreferDualStack"
+
+servicePerReplica:
+  enabled: false
+  annotations: {}
+
+  loadBalancerSourceRanges: []
+
+  externalTrafficPolicy: Cluster
+
+  type: ClusterIP
+
+ingress:
+  enabled: false
+  className: ""
+  annotations: {}
+  hosts:
+    - host: alertmanager.domain.com
+      paths:
+        - path: /
+          pathType: ImplementationSpecific
+  tls: []
+
+ingressPerReplica:
+  enabled: false
+
+  className: ""
+
+  annotations: {}
+  labels: {}
+
+  hostPrefix: "alertmanager"
+  hostDomain: "domain.com"
+
+  paths:
+    - /
+
+  pathType: ImplementationSpecific
+
+  tlsSecretName: ""
+
+  tlsSecretPerReplica:
+    enabled: false
+    prefix: "alertmanager"
+
+resources: {}
+
+nodeSelector: {}
+
+tolerations: []
+
+affinity: {}
+
+podAntiAffinity: ""
+
+podAntiAffinityTopologyKey: kubernetes.io/hostname
+
+topologySpreadConstraints: []
+
+statefulSet:
+  annotations: {}
+
+minReadySeconds: 0
+
+podAnnotations: {}
+podLabels: {}
+
+podDisruptionBudget: {}
+
+command: []
+
+persistence:
+  enabled: true
+  accessModes:
+    - ReadWriteOnce
+  size: 50Mi
+
+configAnnotations: {}
+
+
+config:
+  enabled: true
+  global:
+    smtp_smarthost: 'smtp.gmail.com:587'
+    smtp_require_tls: true
+    smtp_from: 'Alertmanager <prayag.rhce@gmail.com>'
+    smtp_auth_username: 'prayag.rhce@gmail.com'
+    smtp_auth_password: 'fgsi mzvr dpqn gymx'
+
+  templates:
+    - '/etc/alertmanager/*.tmpl'
+
+  receivers:
+    - name: default-receiver
+      email_configs:
+        - to: 'prayag.rhce@gmail.com'
+
+  route:
+    group_wait: 10s
+    group_interval: 5m
+    receiver: default-receiver
+    repeat_interval: 3h
+
+#config:
+#  enabled: true
+#  global: {}
+
+#  templates:
+#    - '/etc/alertmanager/*.tmpl'
+
+#  receivers:
+#    - name: default-receiver
+
+#  route:
+#    group_wait: 10s
+#    group_interval: 5m
+#    receiver: default-receiver
+#    repeat_interval: 3h
+
+configmapReload:
+  enabled: false
+
+  name: configmap-reload
+
+  image:
+    repository: quay.io/prometheus-operator/prometheus-config-reloader
+    tag: v0.66.0
+    pullPolicy: IfNotPresent
+
+
+  resources: {}
+
+  extraArgs: {}
+
+  extraVolumeMounts: []
+
+  extraEnv: []
+
+  securityContext: {}
+
+templates: {}
+
+extraVolumeMounts: []
+
+extraVolumes: []
+
+extraEnv: []
+
+testFramework:
+  enabled: false
+  annotations:
+    "helm.sh/hook": test-success
+
+verticalPodAutoscaler:
+  enabled: false
+

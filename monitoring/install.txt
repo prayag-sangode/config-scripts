@@ -1,0 +1,90 @@
+# Install minikube
+
+wget https://github.com/prayag-sangode/config-scripts/blob/main/minikube-install.sh
+bash minikube-install.sh
+
+# Install helm
+
+curl -fsSL -o get_helm.sh https://raw.githubusercontent.com/helm/helm/main/scripts/get-helm-3 && chmod 700 get_helm.sh && ./get_helm.sh
+
+# Install Prometheus
+
+https://artifacthub.io/packages/helm/prometheus-community/prometheus
+
+helm repo add prometheus-community https://prometheus-community.github.io/helm-charts
+helm repo update
+helm repo ls
+helm show values prometheus-community/prometheus > prometheus-values.yaml
+cat prometheus-values.yaml
+helm install prometheus prometheus-community/prometheus -n monitoring -f prometheus-values.yaml --version 25.26.0 --create-namespace
+
+helm upgrade --install prometheus prometheus-community/prometheus -n monitoring -f prometheus-values.yaml --version 25.26.0 --create-namespace
+
+helm -n monitoring ls
+kubectl -n monitoring get all
+
+kubectl -n monitoring get configmap prometheus-server -o yaml
+
+
+# Alertmanager
+
+https://artifacthub.io/packages/helm/prometheus-community/alertmanager
+
+helm repo add prometheus-community https://prometheus-community.github.io/helm-charts
+helm show values prometheus-community/alertmanager > alertmanager-values.yaml
+helm install alertmanager prometheus-community/alertmanager  -n monitoring -f alertmanager-values.yaml --create-namespace --version 1.12.0
+
+helm upgrade --install alertmanager prometheus-community/alertmanager  -n monitoring -f alertmanager-values.yaml  --version 1.12.0 --create-namespace
+
+kubectl -n monitoring get configmap alertmanager -o yaml
+
+# Grafana
+
+https://artifacthub.io/packages/helm/grafana/grafana
+
+helm repo add grafana https://grafana.github.io/helm-charts
+helm repo update
+helm repo ls
+helm show values grafana/grafana > grafana-values.yaml
+cat grafana-values.yaml
+helm install grafana grafana/grafana -n monitoring --version 8.4.5 --create-namespace
+helm -n monitoring ls
+kubectl -n monitoring get all
+
+# To upgrade values
+
+helm upgrade --install grafana grafana/grafana -n monitoring --create-namespace -f grafana-values.yaml --version 8.4.5
+
+kubectl get secret --namespace monitoring grafana -o jsonpath="{.data.admin-password}" | base64 --decode ; echo
+
+
+kubectl -n monitoring get svc
+kubectl -n monitoring port-forward svc/prometheus-server 9090:80 --address 0.0.0.0
+ kubectl -n monitoring port-forward svc/alertmanager 9093:9093 --address 0.0.0.0
+kubectl -n monitoring port-forward svc/grafana 3000:80 --address 0.0.0.0
+
+
+
+Configure smtp setting for alertmanager
+
+We will have to Create app password using this link
+
+Important: To create an app password, you need 2-Step Verification on your Google Account.
+
+Refer this link -> https://support.google.com/mail/answer/185833?hl=en
+
+Access this link https://myaccount.google.com/apppasswords and create app password
+Enter App name as - smtp-app and click on "Create"
+
+Password will be displayed on screen
+
+fgsi mzvr dpqn gymx   podv mgge kuub gcum
+
+Note down the app password, in this case it is "podv mgge kuub gcum"
+
+Simulate alert
+deploy nginx
+deploy httpd
+
+
+
