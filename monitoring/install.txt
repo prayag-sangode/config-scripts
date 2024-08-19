@@ -80,7 +80,7 @@ Password will be displayed on screen
 
 fgsi mzvr dpqn gymx   podv mgge kuub gcum
 
-Note down the app password, in this case it is "podv mgge kuub gcum"
+Note down the app password, in this case it is "some password"
 
 Simulate alert
 deploy nginx

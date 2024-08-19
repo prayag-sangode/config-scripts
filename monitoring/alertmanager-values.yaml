@@ -154,7 +154,7 @@ config:
     smtp_require_tls: true
     smtp_from: 'Alertmanager <prayag.rhce@gmail.com>'
     smtp_auth_username: 'prayag.rhce@gmail.com'
-    smtp_auth_password: 'fgsi mzvr dpqn gymx'
+    smtp_auth_password: 'some password'
 
   templates:
     - '/etc/alertmanager/*.tmpl'
