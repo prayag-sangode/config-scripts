@@ -1,0 +1,13 @@
+# Install terraform
+
+wget https://raw.githubusercontent.com/prayag-sangode/config-scripts/main/terraform-install-bin.sh
+bash terraform-install-bin.sh
+
+# Install and configure aws cli
+
+# Clone repo and install eks
+git clone https://github.com/prayag-sangode/config-scripts
+
+
+# Connect EKS
+aws eks update-kubeconfig --region us-east-1 --name my-eks-mzPGWP2C
