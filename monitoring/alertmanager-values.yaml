@@ -143,6 +143,7 @@ persistence:
   accessModes:
     - ReadWriteOnce
   size: 50Mi
+  storageClass: gp2
 
 configAnnotations: {}
 
