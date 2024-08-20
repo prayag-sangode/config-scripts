@@ -301,7 +301,7 @@ server:
     loadBalancerSourceRanges: []
     servicePort: 80
     sessionAffinity: None
-    type: ClusterIP
+    type: LoadBalancer
 
     gRPC:
       enabled: false
