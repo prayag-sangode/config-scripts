@@ -58,7 +58,7 @@ readinessProbe:
 service:
   annotations: {}
   labels: {}
-  type: ClusterIP
+  type: LoadBalancer
   port: 9093
   clusterPort: 9094
 
