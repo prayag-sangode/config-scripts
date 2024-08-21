@@ -15,4 +15,3 @@ kubectl config delete-context minikube
 kubectl config delete-cluster minikube
 
 echo "Minikube has been completely uninstalled."
-prayag@minikube:~/scripts$
