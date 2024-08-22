@@ -203,6 +203,7 @@ server:
     mountPath: /data
 
     size: 8Gi
+    storageClass: "gp2"
 
 
 
