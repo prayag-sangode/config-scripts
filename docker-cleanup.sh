@@ -1,22 +1,19 @@
 #!/bin/bash
 
-# Get all running container IDs
+# Stop all containers
 containers=$(sudo docker ps -aq)
-
-# Stop all running containers if any exist
 if [ -n "$containers" ]; then
-  sudo docker stop $containers
-  sudo docker rm $containers
-else
-  echo "No containers to stop and remove."
+    sudo docker stop $containers
 fi
 
-# Get all image IDs
-images=$(sudo docker images -q)
+# Remove all containers
+containers=$(sudo docker ps -aq)
+if [ -n "$containers" ]; then
+    sudo docker rm $containers
+fi
 
-# Remove all images if any exist
+# Remove all images
+images=$(sudo docker images -q)
 if [ -n "$images" ]; then
-  sudo docker rmi $images
-else
-  echo "No images to remove."
+    sudo docker rmi $images
 fi
