@@ -1,0 +1,265 @@
+prayag@devops-prayag-test-bastion-host:~/monitoring$ cat install.txt
+helm repo add prometheus-community https://prometheus-community.github.io/helm-charts
+helm upgrade --install prometheus prometheus-community/prometheus --version 25.27.0 -f values.yaml -n monitoring --create-namespace
+
+helm upgrade --install alertmanager prometheus-community/alertmanager --version 1.12.0 -f values.yaml -n monitoring --create-namespace
+
+helm repo add grafana https://grafana.github.io/helm-charts
+helm upgrade --install grafana grafana/grafana --version 8.5.1 -f values.yaml -n monitoring --create-namespace
+
+kubectl get secret --namespace monitoring grafana -o jsonpath="{.data.admin-password}" | base64 --decode ; echo
+prayag@devops-prayag-test-bastion-host:~/monitoring$ cat prometheus-values.yaml
+rbac:
+  create: true
+
+podSecurityPolicy:
+  enabled: false
+
+serviceAccounts:
+  server:
+    create: true
+
+configmapReload:
+
+  prometheus:
+    enabled: true
+    image:
+      repository: quay.io/prometheus-operator/prometheus-config-reloader
+      tag: v0.76.0
+      digest: ""
+      pullPolicy: IfNotPresent
+    containerPort: 8080
+    containerPortName: metrics
+
+server:
+  name: server
+  releaseNamespace: false
+  image:
+    repository: quay.io/prometheus/prometheus
+    pullPolicy: IfNotPresent
+
+  configPath: /etc/config/prometheus.yml
+
+  global:
+    scrape_interval: 1m
+    scrape_timeout: 10s
+    evaluation_interval: 1m
+
+  ingress:
+    enabled: true
+    annotations:
+      cert-manager.io/cluster-issuer: letsencrypt-prod
+      nginx.ingress.kubernetes.io/force-ssl-redirect: "false"
+      kubernetes.io/ingress.class: nginx
+    hosts:
+      - prometheus.devops-test.llmhub.t-systems.net
+    #tls:
+    #  - secretName: prometheus-devops-test-tls
+    #    hosts:
+    #      - prometheus.devops-test.llmhub.t-systems.net
+
+  persistentVolume:
+    enabled: true
+    statefulSetNameOverride: ""
+    accessModes:
+      - ReadWriteOnce
+    existingClaim: ""
+    mountPath: /data
+    size: 8Gi
+    storageClass: "csi-disk"
+
+  replicaCount: 1
+  revisionHistoryLimit: 10
+
+
+serverFiles:
+  alerting_rules.yml:
+    groups:
+      - name: test
+        rules:
+          - alert: TestAlert
+            expr: vector(1)
+            for: 1m
+            labels:
+              severity: critical
+            annotations:
+              summary: "Test alert is firing."
+              description: "This is a test alert."
+      - name: kubernetes-pods
+        rules:
+          - alert: PodDown
+            expr: up == 0
+            for: 1m
+            labels:
+              severity: critical
+            annotations:
+              summary: "Pod {{ $labels.pod }} is down"
+              description: "The pod {{ $labels.pod }} in namespace {{ $labels.namespace }} is down."
+
+          - alert: ContainerCreatingFor5Minutes
+            expr: |
+              max by (namespace, pod) (
+                kube_pod_status_phase{phase!="Running"}
+              ) > 0
+            for: 5m
+            labels:
+              severity: critical
+            annotations:
+              summary: "Pod '{{ $labels.pod }}' in namespace '{{ $labels.namespace }}' is in a non-'Running' state for more than 5 minutes."
+              description: "The pod '{{ $labels.pod }}' in namespace '{{ $labels.namespace }}' has been in a non-'Running' state for more than 5 minutes."
+
+          - alert: PodHighCpuUsage
+            expr: sum(rate(container_cpu_usage_seconds_total{job="kubelet", container_name!="POD"}[1m])) by (pod) > 1
+            for: 5m
+            labels:
+              severity: warning
+            annotations:
+              summary: "High CPU usage in pod {{ $labels.pod }}"
+              description: "The pod {{ $labels.pod }} in namespace {{ $labels.namespace }} has high CPU usage."
+
+          - alert: PodHighMemoryUsage
+            expr: sum(container_memory_usage_bytes{job="kubelet", container_name!="POD"}) by (pod) / sum(machine_memory_bytes) by (node) > 0.8
+            for: 5m
+            labels:
+              severity: warning
+            annotations:
+              summary: "High memory usage in pod {{ $labels.pod }}"
+              description: "The pod {{ $labels.pod }} in namespace {{ $labels.namespace }} has high memory usage."
+
+
+  prometheus.yml:
+    rule_files:
+      - /etc/config/recording_rules.yml
+      - /etc/config/alerting_rules.yml
+      - /etc/config/rules
+      - /etc/config/alerts
+
+    alerting:
+      alertmanagers:
+      - static_configs:
+        - targets: ['alertmanager.monitoring.svc.cluster.local:9093']
+
+    scrape_configs:
+      - job_name: prometheus
+        static_configs:
+          - targets:
+            - localhost:9090
+
+      - job_name: alertmanager
+        static_configs:
+          - targets:
+            - alertmanager.monitoring.svc.cluster.local:9093
+
+      - job_name: 'prometheus-pushgateway'
+        honor_labels: true
+
+        kubernetes_sd_configs:
+          - role: service
+
+        relabel_configs:
+          - source_labels: [__meta_kubernetes_service_annotation_prometheus_io_probe]
+            action: keep
+            regex: pushgateway
+
+alertmanager:
+  enabled: false
+
+kube-state-metrics:
+  enabled: true
+
+prometheus-node-exporter:
+  enabled: true
+
+prometheus-pushgateway:
+  enabled: true
+
+prayag@devops-prayag-test-bastion-host:~/monitoring$ cat alertmanager-values.yaml
+ingress:
+  enabled: true
+  className: "nginx"
+  annotations:
+    cert-manager.io/cluster-issuer: letsencrypt-prod
+    nginx.ingress.kubernetes.io/force-ssl-redirect: "false"
+    kubernetes.io/ingress.class: nginx
+
+  hosts:
+    - host: alertmanager.devops-test.llmhub.t-systems.net
+      paths:
+        - path: /
+          pathType: ImplementationSpecific
+
+#  tls:
+#    - secretName: alertmanager-devops-test-tls
+#      hosts:
+#        - alertmanager.devops-test.llmhub.t-systems.net
+
+persistence:
+  enabled: true
+  accessModes:
+    - ReadWriteOnce
+  size: 5000Mi
+  storageClass: csi-disk
+
+config:
+  enabled: true
+  global:
+    smtp_smarthost: 'smtp.gmail.com:587'
+    smtp_require_tls: true
+    smtp_from: 'Alertmanager <prayag.sangode@t-systems.com>'
+    smtp_auth_username: 'prayag.rhce@gmail.com'
+    smtp_auth_password: 'abcd efgh hijk lmno'
+
+  templates:
+    - '/etc/alertmanager/*.tmpl'
+
+  receivers:
+    - name: default-receiver
+      email_configs:
+        - to: 'prayag.sangode@t-systems.com'
+        #- to: 'LLMHub-Alerts@internal.telekom.com'
+
+  route:
+    group_wait: 10s
+    group_interval: 5m
+    receiver: default-receiver
+    repeat_interval: 3h
+prayag@devops-prayag-test-bastion-host:~/monitoring$ cat grafana-values.yaml
+ingress:
+  enabled: true
+  annotations:
+    cert-manager.io/cluster-issuer: letsencrypt-prod
+    nginx.ingress.kubernetes.io/force-ssl-redirect: "false"
+    kubernetes.io/ingress.class: nginx
+  path: /
+  pathType: Prefix
+  spec:
+    ingressClassName: nginx
+  hosts:
+    - grafana.devops-test.llmhub.t-systems.net
+  paths:
+    - path: /
+      pathType: Prefix
+      backend:
+        service:
+          name: grafana
+          port:
+            number: 80
+#  tls:
+#    - secretName: test-grafana.devops-test-tls
+#      hosts:
+#        - test-grafana.devops-test.llmhub.t-systems.net
+
+persistence:
+  type: pvc
+  enabled: true
+  accessModes:
+    - ReadWriteOnce
+  size: 8Gi
+  finalizers:
+    - kubernetes.io/pvc-protection
+  extraPvcLabels: {}
+  disableWarning: false
+  storageClassName: "csi-disk"
+
+
+prayag@devops-prayag-test-bastion-host:~/monitoring$
