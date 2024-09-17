@@ -52,11 +52,11 @@ server:
       nginx.ingress.kubernetes.io/force-ssl-redirect: "false"
       kubernetes.io/ingress.class: nginx
     hosts:
-      - prometheus.devops-test.llmhub.t-systems.net
+      - prometheus.example.com
     #tls:
     #  - secretName: prometheus-devops-test-tls
     #    hosts:
-    #      - prometheus.devops-test.llmhub.t-systems.net
+    #      - prometheus.example.com
 
   persistentVolume:
     enabled: true
@@ -183,7 +183,7 @@ ingress:
     kubernetes.io/ingress.class: nginx
 
   hosts:
-    - host: alertmanager.devops-test.llmhub.t-systems.net
+    - host: alertmanager.example.com
       paths:
         - path: /
           pathType: ImplementationSpecific
@@ -191,7 +191,7 @@ ingress:
 #  tls:
 #    - secretName: alertmanager-devops-test-tls
 #      hosts:
-#        - alertmanager.devops-test.llmhub.t-systems.net
+#        - alertmanager.example.com
 
 persistence:
   enabled: true
@@ -216,7 +216,6 @@ config:
     - name: default-receiver
       email_configs:
         - to: 'prayag.sangode@t-systems.com'
-        #- to: 'LLMHub-Alerts@internal.telekom.com'
 
   route:
     group_wait: 10s
@@ -235,7 +234,7 @@ ingress:
   spec:
     ingressClassName: nginx
   hosts:
-    - grafana.devops-test.llmhub.t-systems.net
+    - grafana.example.com
   paths:
     - path: /
       pathType: Prefix
@@ -247,7 +246,7 @@ ingress:
 #  tls:
 #    - secretName: test-grafana.devops-test-tls
 #      hosts:
-#        - test-grafana.devops-test.llmhub.t-systems.net
+#        - test-grafana.example.com
 
 persistence:
   type: pvc
