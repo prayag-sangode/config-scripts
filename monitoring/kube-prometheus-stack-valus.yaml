@@ -1,0 +1,91 @@
+#helm install kube-prometheus-stack prometheus-community/kube-prometheus-stack --version 62.7.0  -f values.yaml -n monitoring --create-namespace 
+
+#helm repo add prometheus-community https://prometheus-community.github.io/helm-charts
+
+prometheus:
+  enabled: true
+  prometheusSpec:
+    routePrefix: "/"
+    storageSpec:
+      volumeClaimTemplate:
+        spec:
+          accessModes: ["ReadWriteOnce"]
+          resources:
+            requests:
+              storage: 50Gi
+          storageClassName: "csi-disk"
+    service:
+      type: ClusterIP
+      port: 9090
+  ingress:
+    enabled: true
+    annotations:
+      kubernetes.io/ingress.class: nginx
+      nginx.ingress.kubernetes.io/rewrite-target: /
+    hosts:
+      - prometheus.devops-test.llmhub.t-systems.net
+    pathType: ImplementationSpecific
+    paths:
+      - /
+    serviceName: prometheus
+    servicePort: 9090
+#    tls:
+#      - secretName: prometheus-tls
+#        hosts:
+#          - prometheus.devops-test.llmhub.t-systems.net
+
+alertmanager:
+  enabled: true
+  alertmanagerSpec:
+    routePrefix: "/"
+    storage:
+      volumeClaimTemplate:
+        spec:
+          accessModes: ["ReadWriteOnce"]
+          resources:
+            requests:
+              storage: 10Gi
+          storageClassName: "csi-disk"
+    service:
+      type: ClusterIP
+      port: 9093
+  ingress:
+    enabled: true
+    annotations:
+      kubernetes.io/ingress.class: nginx
+      nginx.ingress.kubernetes.io/rewrite-target: /
+    hosts:
+      - alertmanager.devops-test.llmhub.t-systems.net
+    pathType: ImplementationSpecific
+    paths:
+      - /
+    serviceName: kube-prometheus-stack-alertmanager
+    servicePort: 9093
+#    tls:
+#      - secretName: alertmanager-tls
+#        hosts:
+#          - alertmanager.devops-test.llmhub.t-systems.net
+
+grafana:
+  persistence:
+    enabled: true
+    accessModes:
+      - ReadWriteOnce
+    size: 10Gi
+    storageClassName: "csi-disk"
+  ingress:
+    enabled: true
+    annotations:
+      kubernetes.io/ingress.class: nginx
+      nginx.ingress.kubernetes.io/rewrite-target: /
+    hosts:
+      - grafana.devops-test.llmhub.t-systems.net
+    pathType: ImplementationSpecific
+    paths:
+      - /
+    serviceName: kube-prometheus-stack-grafana
+    servicePort: 80
+#    tls:
+#      - secretName: grafana-tls
+#        hosts:
+#          - grafana.devops-test.llmhub.t-systems.net
