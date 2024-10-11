@@ -31,9 +31,6 @@ modprobe br_netfilter
 # Persist kernel module settings
 echo -e "overlay\nbr_netfilter" > /etc/modules-load.d/k8s.conf
 
-# Switch to iptables-legacy
-update-alternatives --set iptables /usr/sbin/iptables-legacy
-
 # Disable swap
 swapoff -a
 sed -i '/swap.img/s/^/#/' /etc/fstab
