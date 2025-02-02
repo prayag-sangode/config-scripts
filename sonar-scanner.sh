@@ -1,27 +1,39 @@
 #!/bin/bash
 
-# https://binaries.sonarsource.com/Distribution/sonar-scanner-cli/sonar-scanner-cli-4.5.0.2216-linux.zip
-SONAR_SCANNER_VERSION=4.5.0.2216
+# Define variables
+SONAR_SCANNER_VERSION="6.2.1.4610"
+SONAR_SCANNER_DIR="/opt/sonar-scanner"
+SONAR_SCANNER_ZIP="sonar-scanner-cli-${SONAR_SCANNER_VERSION}-linux-x64.zip"
+SONAR_SCANNER_URL="https://binaries.sonarsource.com/Distribution/sonar-scanner-cli/${SONAR_SCANNER_ZIP}"
 
-cd /tmp || exit
-echo "Downloading sonar-scanner....."
-if [ -d "/tmp/sonar-scanner-cli-$SONAR_SCANNER_VERSION-linux.zip" ];then
-    sudo rm /tmp/sonar-scanner-cli-$SONAR_SCANNER_VERSION-linux.zip
-fi
-wget https://binaries.sonarsource.com/Distribution/sonar-scanner-cli/sonar-scanner-cli-$SONAR_SCANNER_VERSION-linux.zip
-echo "Download completed."
+# Step 1: Install unzip if not already installed
+echo "Installing unzip..."
+sudo apt update && sudo apt install -y unzip
 
-echo "Unziping downloaded file..."
-unzip sonar-scanner-cli-$SONAR_SCANNER_VERSION-linux.zip
-echo "Unzip completed."
-rm sonar-scanner-cli-$SONAR_SCANNER_VERSION-linux.zip
+# Step 2: Download SonarScanner CLI
+echo "Downloading SonarScanner CLI..."
+sudo mkdir -p ${SONAR_SCANNER_DIR}
+cd ${SONAR_SCANNER_DIR}
+sudo wget ${SONAR_SCANNER_URL}
 
-echo "Installing to opt..."
-if [ -d "/var/opt/sonar-scanner-$SONAR_SCANNER_VERSION-linux" ];then
-    sudo rm -rf /var/opt/sonar-scanner-$SONAR_SCANNER_VERSION-linux
-fi
-sudo mv sonar-scanner-$SONAR_SCANNER_VERSION-linux /var/opt
+# Step 3: Extract SonarScanner
+echo "Extracting SonarScanner CLI..."
+sudo unzip ${SONAR_SCANNER_ZIP}
 
-echo "Installation completed successfully."
+# Step 4: Remove the downloaded ZIP file
+echo "Cleaning up..."
+sudo rm -f ${SONAR_SCANNER_ZIP}
 
-echo "You can use sonar-scanner!"
+# Step 5: Set environment variable globally
+echo "Setting up system-wide PATH for SonarScanner..."
+echo "export PATH=\$PATH:${SONAR_SCANNER_DIR}/sonar-scanner-${SONAR_SCANNER_VERSION}-linux-x64/bin" | sudo tee -a /etc/profile > /dev/null
+
+# Step 6: Reload profile to apply changes
+echo "Reloading profile..."
+source /etc/profile
+
+# Step 7: Verify SonarScanner installation
+echo "Verifying installation..."
+sonar-scanner --version
+
+echo "SonarScanner installation completed successfully!"
