@@ -34,4 +34,4 @@ alias kubectl='microk8s kubectl'
 echo "alias kubectl='microk8s kubectl'" >> ~/.bashrc
 
 # Exit (logout, later log back in to apply group changes"
-logout
+exit
