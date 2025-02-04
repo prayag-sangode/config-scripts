@@ -20,17 +20,20 @@ sleep 20
 echo "Adding current user to the MicroK8s group..."
 sudo usermod -a -G microk8s $USER
 sudo chown -f -R $USER ~/.kube
+newgrp microk8s
 
 # Sleep to ensure the usermod command takes effect
 echo "Waiting for usermod to take effect..."
-sleep 10
+sleep 20
 
 # Verify the status of MicroK8s services
 echo "Verifying the status of MicroK8s services..."
 sudo microk8s status --wait-ready
 
-# Enable addons
-sudo microk8s enable dns storage dashboard metallb:192.168.1.131-192.168.1.135
+# Enable necessary MicroK8s addons including MetalLB
+sudo microk8s enable dns storage dashboard metallb:192.168.1.131-192.168.1.135 
+
+sleep 60
 
 # Add kubectl alias
 alias kubectl='microk8s kubectl'
