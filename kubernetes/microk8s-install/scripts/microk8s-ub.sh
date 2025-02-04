@@ -29,6 +29,9 @@ sleep 10
 echo "Verifying the status of MicroK8s services..."
 sudo microk8s status --wait-ready
 
+# Enable addons
+sudo microk8s enable dns storage dashboard metallb:192.168.1.131-192.168.1.135
+
 # Add kubectl alias
 alias kubectl='microk8s kubectl'
 echo "alias kubectl='microk8s kubectl'" >> ~/.bashrc
