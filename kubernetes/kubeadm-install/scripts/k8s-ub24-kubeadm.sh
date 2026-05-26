@@ -62,8 +62,9 @@ if [[ "$(hostname)" == "k8s-node1.example.com" ]]; then
     # Verify node status
     kubectl get nodes
 
-    # Install Calico as the CNI plugin for pod networking
-    wget https://raw.githubusercontent.com/projectcalico/calico/master/manifests/calico.yaml
+    # Install stable Calico CNI plugin for pod networking
+    wget https://raw.githubusercontent.com/projectcalico/calico/v3.28.2/manifests/calico.yaml
+
     kubectl apply -f calico.yaml
 
     # Verify node and pod status
