@@ -51,10 +51,10 @@ echo "=== Registering Runner ==="
 gitlab-runner register \
   --non-interactive \
   --url "https://gitlab.devops.telekom.de" \
-  --token "glrt-SkUbOPxaIfxzTLXO4wKAMG86MQpwOmJlZnUKdDozCnU6cGt6FA.01.1e07pwxzj" \
+  --token "${var.gitlab_runner_token}" \
   --executor "docker" \
   --docker-image "alpine:latest" \
-  --description "tcp-lz-runner"
+  --description "${var.gitlab_runner_name}"
 
 systemctl enable gitlab-runner
 systemctl restart gitlab-runner
